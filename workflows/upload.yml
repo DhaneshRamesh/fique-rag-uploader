@@ -1,0 +1,32 @@
+name: Scrape and Upload to Azure Blob
+
+on:
+  schedule:
+    - cron: "0 1 * * *"  # Runs daily at 1:00 AM UTC
+  workflow_dispatch:      # Allows manual triggering from GitHub
+
+jobs:
+  scrape_and_upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run scraper
+        run: python scrape_and_save.py
+
+      - name: Upload to Azure Blob
+        run: python upload_blob.py
+        env:
+          AZURE_CONN_STR: ${{ secrets.AZURE_CONN_STR }}
