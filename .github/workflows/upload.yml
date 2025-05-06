@@ -1,9 +1,11 @@
 name: Scrape and Upload to Azure
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [main]  # Triggers on push to main branch
+  workflow_dispatch:   # Allows manual trigger from GitHub UI
   schedule:
-    - cron: "0 2 * * *"  # Optional daily run at 2AM UTC
+    - cron: "0 2 * * *"  # Optional: runs daily at 2AM UTC
 
 jobs:
   scrape-and-upload:
