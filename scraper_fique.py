@@ -5,7 +5,7 @@ import os
 
 BASE_URL = "https://www.fique.co.uk"
 BLOG_LIST_URL = f"{BASE_URL}/blogs/news"
-OUTPUT_FILE = "fique_articles.json"
+OUTPUT_FILE = "fique_articles.jsonl"  # 🔄 changed extension
 all_articles = []
 
 with sync_playwright() as p:
@@ -28,8 +28,6 @@ with sync_playwright() as p:
     for url in sorted(article_links):
         try:
             page.goto(url, wait_until="load")
-
-            # ✅ FIX: scripts are not visible, just attached
             page.wait_for_selector('script[type="application/ld+json"]', timeout=8000, state="attached")
             script_tags = page.query_selector_all('script[type="application/ld+json"]')
 
@@ -62,9 +60,10 @@ with sync_playwright() as p:
 
     browser.close()
 
-# Step 3: Save to JSON
+# Step 3: Save to JSONL
 with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-    json.dump(all_articles, f, indent=2, ensure_ascii=False)
+    for article in all_articles:
+        f.write(json.dumps(article, ensure_ascii=False) + "\n")
 
 print(f"\n🎉 Done! Scraped {len(all_articles)} articles.")
 print(f"📁 Saved to: {os.path.abspath(OUTPUT_FILE)}")
