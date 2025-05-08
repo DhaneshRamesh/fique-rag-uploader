@@ -7,6 +7,9 @@ on:
   schedule:
     - cron: "0 2 * * *"  # daily at 2AM UTC
 
+permissions:
+  contents: write  # ← Required to allow pushes from actions
+
 jobs:
   scrape-and-upload:
     runs-on: ubuntu-latest
