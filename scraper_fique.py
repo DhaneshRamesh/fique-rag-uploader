@@ -1,3 +1,5 @@
+# 📝 Trigger commit: Added trivial comment for GitHub Actions testing
+
 from playwright.sync_api import sync_playwright
 import json
 from urllib.parse import urljoin
@@ -5,7 +7,7 @@ import os
 
 BASE_URL = "https://www.fique.co.uk"
 BLOG_LIST_URL = f"{BASE_URL}/blogs/news"
-OUTPUT_FILE = "fique_articles.jsonl"  # 🔄 changed extension
+OUTPUT_FILE = "fique_articles.jsonl"
 all_articles = []
 
 with sync_playwright() as p:
