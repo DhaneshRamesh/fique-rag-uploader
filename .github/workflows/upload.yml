@@ -2,17 +2,17 @@ name: Scrape and Upload to Azure
 
 on:
   push:
-    branches: [main]  # Trigger on push to main
-  workflow_dispatch:   # Allow manual trigger
+    branches: [main]
+  workflow_dispatch:
   schedule:
-    - cron: "0 2 * * *"  # Optional: run daily at 2 AM UTC
+    - cron: "0 2 * * *"  # Runs daily at 2AM UTC
 
 jobs:
   scrape-and-upload:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -26,18 +26,18 @@ jobs:
       - name: Install Playwright Browsers
         run: python -m playwright install
 
-      - name: Run scraper to generate JSONL
+      - name: Run scraper
         run: python scraper_fique.py
 
-      - name: Commit updated JSONL to GitHub
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add fique_articles.jsonl
-          git diff --cached --quiet || git commit -m "🤖 Auto-update fique_articles.jsonl from scraper"
-          git push
-          
       - name: Upload to Azure Blob
         run: python upload_blob.py
         env:
           AZURE_CONN_STR: ${{ secrets.AZURE_CONN_STR }}
+
+      - name: Make push_jsonl.sh executable
+        run: chmod +x push_jsonl.sh
+
+      - name: Push updated JSONL to GitHub
+        run: ./push_jsonl.sh
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
