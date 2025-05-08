@@ -5,7 +5,7 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    - cron: "0 2 * * *"  # Runs daily at 2AM UTC
+    - cron: "0 2 * * *"  # daily at 2AM UTC
 
 jobs:
   scrape-and-upload:
@@ -29,12 +29,12 @@ jobs:
       - name: Run scraper
         run: python scraper_fique.py
 
-      - name: Upload to Azure Blob
+      - name: Upload to Azure Blob Storage
         run: python upload_blob.py
         env:
           AZURE_CONN_STR: ${{ secrets.AZURE_CONN_STR }}
 
-      - name: Make push_jsonl.sh executable
+      - name: Make push script executable
         run: chmod +x push_jsonl.sh
 
       - name: Push updated JSONL to GitHub
