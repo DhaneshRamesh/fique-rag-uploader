@@ -4,8 +4,8 @@ import os
 # Use GitHub Secret
 AZURE_CONN_STR = os.getenv("AZURE_CONN_STR")
 CONTAINER_NAME = "blog-data"
-BLOB_NAME = "fique_articles.json"
-LOCAL_FILE = "fique_articles.json"
+BLOB_NAME = "fique_articles.jsonl"  # ✅ must match what indexer watches
+LOCAL_FILE = "fique_articles.jsonl"
 
 def upload():
     blob_service_client = BlobServiceClient.from_connection_string(AZURE_CONN_STR)
@@ -13,7 +13,7 @@ def upload():
 
     try:
         container_client.create_container()
-    except Exception as e:
+    except Exception:
         print("Container likely exists, continuing...")
 
     with open(LOCAL_FILE, "rb") as data:
