@@ -51,7 +51,7 @@ with sync_playwright() as p:
             article = {
                 "title": article_json.get("headline", "Untitled"),
                 "url": url,
-                "content": article_json["articleBody"].strip()
+                "article_content": article_json["articleBody"].strip()  # ✅ fixed key name
             }
 
             all_articles.append(article)
